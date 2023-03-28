@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>b3063797-7925-4601-890e-20ee564e3500</ProjectGuid>
+    <ProjectGuid>dcb84c3b-6332-4c1c-9b09-153a58586189</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>hungrygame</DockerServiceName>
@@ -12,7 +12,7 @@
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
-    <None Include="clients\foolhearty\docker-compose.yml" />
+    <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>

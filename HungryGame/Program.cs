@@ -1,9 +1,33 @@
 using HungryGame;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 var requestErrorCount = 0L;
+
+/*using var traceProvider = Sdk.CreateTracerProviderBuilder()
+    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HungryGame"))
+    .AddJaegerExporter(o =>
+    {
+        o.Protocol = OpenTelemetry.Exporter.JaegerExportProtocol.HttpBinaryThrift;
+        o.Endpoint = new Uri("http://jaeger:14268/api/traces");
+    })
+    .AddHttpClientInstrumentation()
+    .AddAspNetCoreInstrumentation()
+    .Build();*/
+
+/*builder.Host.UseSerilog((context, loggerConfig) =>
+{
+    loggerConfig.WriteTo.Console()
+    .Enrich.WithExceptionDetails()
+    .WriteTo.Seq(builder.Configuration["SeqServer"] ?? throw new ApplicationException("Unable to locate key SeqServer in configuration"));
+});*/
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
