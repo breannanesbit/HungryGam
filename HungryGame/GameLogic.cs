@@ -33,16 +33,18 @@ public class GameLogic
     private readonly IConfiguration config;
     private readonly ILogger<GameLogic> log;
     private readonly IRandomService random;
+    private readonly HungryMetrics met;
 
     public int MaxRows { get; private set; } = 0;
     public int MaxCols { get; private set; } = 0;
     public event EventHandler? GameStateChanged;
 
-    public GameLogic(IConfiguration config, ILogger<GameLogic> log, IRandomService random)
+    public GameLogic(IConfiguration config, ILogger<GameLogic> log, IRandomService random, HungryMetrics met)
     {
         this.config = config ?? throw new ArgumentNullException(nameof(config));
         this.log = log;
         this.random = random;
+        this.met = met;
     }
 
     public DateTime lastStateChange;
@@ -281,6 +283,23 @@ public class GameLogic
                 Direction.Right => currentLocation with { Column = currentLocation.Column + 1 },
                 _ => throw new DirectionNotRecognizedException()
             };
+             switch(direction)
+             {
+                case Direction.Up:
+                    met.moveUp.Labels(player.Name).Inc();
+                    break;
+                case Direction.Down:
+                    met.moveDown.Labels(player.Name).Inc();
+                    break;
+                case Direction.Left:
+                    met.moveLeft.Labels(player.Name).Inc();
+                    break;
+                case Direction.Right:
+                    met.moveRight.Labels(player.Name).Inc();
+                    break;
+                default:
+                    break;
+             }
 
             if (!cells.ContainsKey(newLocation))
             {

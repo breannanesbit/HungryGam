@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Prometheus;
 using Serilog;
 using Serilog.Exceptions;
 
@@ -33,6 +34,7 @@ var requestErrorCount = 0L;
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<GameLogic>();
+builder.Services.AddSingleton<HungryMetrics>();
 builder.Services.AddSingleton<IRandomService, SystemRandomService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
@@ -83,6 +85,8 @@ app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{builder.Environment.ApplicationName} v1"));
 
 app.MapFallbackToPage("/_Host");
+
+app.UseMetricServer();
 
 //API endpoints
 app.MapGet("/join", (string? userName, string? playerName, GameLogic gameLogic) =>
