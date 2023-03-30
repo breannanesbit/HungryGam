@@ -90,6 +90,18 @@ public class GameLogic
 
     private void gameOverCallback(object? state)
     {
+        try
+        {
+            var winningPlayer = GetPlayersByScoreDescending();
+            var p = winningPlayer.First();
+            met.winningPlayerScore.Labels(p.Name, p.Score.ToString());
+        }
+        catch (Exception ex) 
+        {
+            log.LogError("No first player");
+        }
+        
+
         log.LogInformation($"Timer ran out.  Game over.");
         Interlocked.Exchange(ref gameStateValue, 3);
 
@@ -162,6 +174,7 @@ public class GameLogic
                 pillValues.Enqueue(i);
             }
 
+
             if (players.Count > 20 || pillValues.Count > 10_000)
                 stateChangeFrequency = TimeSpan.FromMilliseconds(750);
             else
@@ -229,7 +242,7 @@ public class GameLogic
                 cells[newLocation] = newCell;
             }
         }
-
+        
         raiseStateChange();
         return token;
     }
@@ -338,6 +351,7 @@ public class GameLogic
         var origDestinationCell = cells[newLocation];
         if (origDestinationCell.IsPillAvailable)
         {
+            met.pillTotal.Inc();
             player.Score += getPointValue(newLocation);
             ateAPill = true;
         }
@@ -406,10 +420,12 @@ public class GameLogic
 
     private bool removePlayerIfDead(Player player)
     {
+
         if (player == null || player.Score > 0)
             return false;
 
         log.LogInformation("Removing player from board: {player}", player);
+        met.playersDead.Inc();
         var origCell = cells.FirstOrDefault(c => c.Value.OccupiedBy == player);
         var updatedCell = origCell.Value with { OccupiedBy = null, IsPillAvailable = true };
         cells[origCell.Key] = updatedCell;
